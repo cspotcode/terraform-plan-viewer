@@ -1,15 +1,15 @@
-type TODO = any;
+export type TODO = any;
 
-type VersionString = string;
+export type VersionString = string;
 
 /** output of terraform show -json <stateFile> */
-interface StateRepresentation {
+export interface StateRepresentation {
     values: ValuesRepresentation;
     terraform_version: VersionString;
 }
 
 /** output of terraform show -json <planFile> */
-interface PlanRepresentation {
+export interface PlanRepresentation {
     format_version: '0.1';
     prior_state: StateRepresentation;
     configuration: ConfigurationRepresentation;
@@ -32,9 +32,9 @@ interface PlanRepresentation {
     }>;
 }
 
-type VarValue = TODO;
+export type VarValue = TODO;
 
-interface ValuesRepresentation {
+export interface ValuesRepresentation {
     outputs: Record<string, {
         value: VarValue;
         sensitive: boolean;
@@ -63,19 +63,19 @@ namespace ValuesRepresentation {
     }
 }
 
-interface ConfigurationRepresentation {
+export interface ConfigurationRepresentation {
 
 }
 
-interface ExpressionRepresentation {
+export interface ExpressionRepresentation {
 
 }
 
-interface BlockExpressionsRepresentation {
+export interface BlockExpressionsRepresentation {
 
 }
 
-interface ChangeRepresentation {
+export interface ChangeRepresentation {
     actions: ChangeRepresentation.Actions;
     before?: ValueRepresentation;
     after?: ValueRepresentation;
@@ -89,4 +89,11 @@ namespace ChangeRepresentation {
         ['delete', 'create'] |
         ['create', 'delete'] |
         ['delete'];
+}
+
+export interface ValueRepresentation {
+    mode?: TODO;
+    name?: TODO;
+    type?: TODO;
+    index?: TODO;
 }
