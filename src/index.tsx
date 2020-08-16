@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { App } from './App';
+import { App, AppState } from './App';
 import { mergeStyles } from '@fluentui/react';
 
 // Inject some global styles
@@ -14,4 +14,6 @@ mergeStyles({
   }
 });
 
-ReactDOM.render(<App />, document.getElementById('app'));
+const appState = new AppState();
+
+ReactDOM.render(<App appState={appState} />, document.getElementById('app'));
