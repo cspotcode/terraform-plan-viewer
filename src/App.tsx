@@ -1,6 +1,6 @@
 import React, { CSSProperties } from 'react';
 import { Component } from 'react';
-import { Stack, Text, Link, FontWeights, CommandBar, Nav, Breadcrumb, IconType, SearchBox, loadTheme, ScrollablePane, Sticky, StickyPositionType, ScrollbarVisibility } from '@fluentui/react';
+import { Stack, Text, Link, FontWeights, CommandBar, Nav, Breadcrumb, IconType, SearchBox, loadTheme, ScrollablePane, Sticky, StickyPositionType, ScrollbarVisibility, IStyle } from '@fluentui/react';
 import { observer } from 'mobx-react'
 import { observable, computed } from 'mobx'
 import { initializeIcons } from '@uifabric/icons';
@@ -34,6 +34,13 @@ const scrollPaneWrapperStyles: CSSProperties = {
   position: 'relative'
 }
 
+const depthCss: CSSProperties = {
+  boxShadow: Depths.depth4
+};
+const depthStyle: IStyle = {
+  boxShadow: Depths.depth4
+};
+
 @observer
 export class AppMarkup extends Component<{ app: App }> {
   render() {
@@ -47,9 +54,7 @@ export class AppMarkup extends Component<{ app: App }> {
         horizontalAlign="stretch"
       >
         <Stack.Item styles={{
-          root: {
-            boxShadow: Depths.depth4
-          }
+          root: depthStyle
         }}>
           <CommandBar items={[
             {
@@ -110,9 +115,7 @@ export class AppMarkup extends Component<{ app: App }> {
             {/* left nav */}
             {app.sidebarOpen &&
               <Stack.Item styles={{
-                root: {
-                  boxShadow: Depths.depth4
-                }
+                root: depthStyle
               }}>
                 <Nav {...{
                   groups: [{
@@ -193,7 +196,17 @@ export class AppMarkup extends Component<{ app: App }> {
                     }
                   </Stack>
                   <Sticky isScrollSynced={true} stickyPosition={StickyPositionType.Footer}>
-                    Sticky Footer
+                    <CommandBar style={depthCss}
+                      items={[
+                        {
+                          key: 'prev-change',
+                          text: 'Previous Change (k)'
+                        },
+                        {
+                          key: 'next-change',
+                          text: 'Next Change (j)'
+                        }
+                      ]} />
                   </Sticky>
                 </ScrollablePane>
               </div>
