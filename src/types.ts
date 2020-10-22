@@ -2,32 +2,39 @@ export type TODO = any;
 
 export type VersionString = string;
 
+export type FormatVersion = '0.1';
+export type TerraformVersion = string;
+
 /** output of terraform show -json <stateFile> */
 export interface StateRepresentation {
+    format_version: FormatVersion;
     values: ValuesRepresentation;
     terraform_version: VersionString;
 }
 
 /** output of terraform show -json <planFile> */
 export interface PlanRepresentation {
-    format_version: '0.1';
+    terraform_version: TerraformVersion;
+    format_version: FormatVersion;
     prior_state: StateRepresentation;
     configuration: ConfigurationRepresentation;
     planned_values: ValuesRepresentation;
     // All values are either true or false, depending on if it's known or not
-    proposed_unknown: ValuesRepresentation;
+    proposed_unknown?: ValuesRepresentation;
     variables: Record<string, { value: VarValue }>;
     resource_changes: Array<
-        Pick<ValueRepresentation,
-            'mode' | 'type' | 'name' | 'index'> &
+        Pick<
+            ValuesRepresentation.Resource,
+            'mode' | 'type' | 'name' | 'index' | 'address' |
+            'provider_name'
+        > &
         {
-            address: string;
             module_address?: string;
             deposed?: string;
             change: ChangeRepresentation;
         }
     >;
-    output_changes: Record<string, {
+    output_changes?: Record<string, {
         change: ChangeRepresentation;
     }>;
 }
@@ -35,14 +42,11 @@ export interface PlanRepresentation {
 export type VarValue = TODO;
 
 export interface ValuesRepresentation {
-    outputs: Record<string, {
+    outputs?: Record<string, {
         value: VarValue;
         sensitive: boolean;
     }>;
-    root_module: {
-        resources: Array<ValuesRepresentation.Resource>;
-        child_modules: Array<ValuesRepresentation.ChildModule>;
-    }
+    root_module: ValuesRepresentation.Module;
 }
 
 namespace ValuesRepresentation {
@@ -53,13 +57,15 @@ namespace ValuesRepresentation {
         name: string;
         index?: number;
         provider_name: string;
-        schema_version: 2 | number;
-        values: any;
+        schema_version: 2 | 1 | 0;
+        values: Record<string, TODO>;
     }
-    export interface ChildModule {
+    export interface Module {
+        resources?: Array<ValuesRepresentation.Resource>;
+        child_modules?: Array<ValuesRepresentation.AddressedModule>;
+    }
+    export interface AddressedModule extends Module {
         address: string;
-        resources: Array<ValuesRepresentation.Resource>;
-        child_modules?: Array<ValuesRepresentation.ChildModule>;
     }
 }
 
@@ -79,6 +85,7 @@ export interface ChangeRepresentation {
     actions: ChangeRepresentation.Actions;
     before?: ValueRepresentation;
     after?: ValueRepresentation;
+    after_unknown?: ValueRepresentation;
 }
 namespace ChangeRepresentation {
     export type Actions =
@@ -91,9 +98,10 @@ namespace ChangeRepresentation {
         ['delete'];
 }
 
-export interface ValueRepresentation {
-    mode?: TODO;
-    name?: TODO;
-    type?: TODO;
-    index?: TODO;
-}
+export type ValueRepresentation = object;
+// export interface ValueRepresentation {
+//     mode?: TODO;
+//     name?: TODO;
+//     type?: TODO;
+//     index?: TODO;
+// }
